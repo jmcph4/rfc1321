@@ -9,6 +9,10 @@ build: $(SRCS)
 build-debug: $(SRCS)
 	$(CC) $(SRCS) $(CFLAGS) -g3 -o $(TARGET)
 
+.PHONY: test
+test: build
+	./$(TARGET) -x | diff - expected.txt
+
 .PHONY: clean
 clean:
 	rm $(TARGET)
