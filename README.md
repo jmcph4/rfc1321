@@ -1,6 +1,6 @@
 # MD5 Reference Implementation in C as per RFC1321 #
 
-The [MD5](https://en.wikipedia.org/wiki/MD5) cryptographic hash function is fully specified in [RFC 1321](https://www.ietf.org/rfc/rfc1321.txt)[1]. This document contains a reference implementation in the C programming language in its appendices (Appendix A, specifically). This repository contains a copy-paste of this implementation for both pedagogical and convenience purposes.
+The [MD5](https://en.wikipedia.org/wiki/MD5) cryptographic hash function is fully specified in [RFC 1321](https://www.ietf.org/rfc/rfc1321.txt)[1]. This document contains a reference implementation in the C programming language in its appendices (Appendix A, specifically). This repository contains what is largely a copy-paste of this implementation for both pedagogical and convenience purposes.
 
 Quoting Appendix A directly:
 
@@ -50,6 +50,37 @@ Additionally, Ronald Rivest's contact information is listed as:
  > Phone: (617) 253-5880
  >
  > EMail: rivest@theory.lcs.mit.edu
+
+## Modifications ##
+
+The original reference implementation in the RFC is intended for 32-bit machines. Due to the lack of standard integer types (a la `stdint.h`) at the time, `unsigned long int` was typecast to `UINT4` (and similarly for `UINT2`). When compiling on modern 64-bit machines these invariants of course break. As such, I have modified these type aliases accordingly. The Git-flavoured diff for this change is as follows:
+
+```diff
+diff --git a/global.h b/global.h
+index 2ed41be..bc5029d 100644
+--- a/global.h
++++ b/global.h
+@@ -1,5 +1,6 @@
+ /* GLOBAL.H - RSAREF types and constants
+  */
++#include <stdint.h>
+ 
+ /* PROTOTYPES should be set to one if and only if the compiler supports
+   function argument prototyping.
+@@ -14,10 +15,10 @@ The following makes PROTOTYPES default to 0 if it has not already
+ typedef unsigned char *POINTER;
+ 
+ /* UINT2 defines a two byte word */
+-typedef unsigned short int UINT2;
++typedef uint16_t UINT2;
+ 
+ /* UINT4 defines a four byte word */
+-typedef unsigned long int UINT4;
++typedef uint32_t UINT4;
+ 
+ /* PROTO_LIST is defined depending on how PROTOTYPES is defined above.
+ If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
+```
 
 ## Security ##
 
